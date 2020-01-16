@@ -23,13 +23,32 @@ export class Mongo {
     public async connect() {
         try {
             if (!this.client) {
-                this.client = await MongoClient.connect(this.connection, { 'useNewUrlParser': true, useUnifiedTopology: true });
+                const client = await MongoClient.connect(this.connection, { 'useNewUrlParser': true, useUnifiedTopology: true });
+                client.db()
             }
         } catch(error) {
             console.error(error);
         }
     }
+    public db() {
+        if (this.client) {
+
+            return this.client.db(this.database);
+        } else {
+            console.error('no db found');
+            return false;
+        }
+    }
 }
 
-const driverd = new Mongo();
+const asyncCall = async () => {
+    
+    const mongo = new Mongo();
+    await mongo.connect();
+    const db = mongo.db();
+
+
+}
+
+asyncCall();
 
