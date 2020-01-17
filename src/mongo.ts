@@ -37,37 +37,38 @@ export default class Mongo implements IQueryableDriver {
         }
     }
 
-    async delete(query: any, options: any): Promise<any> {
-        const con = await this.conn;
-        if(con){
 
-        }    
-    }
-
-    async find(query: any, options: any): Promise<any[]> {
-        const con = await this.conn;
-        if(con)
-        {
-            const result = await con.collection(options.schema).findOne(query).then((result: any) => result);
-            return result;
-        }else{
-            return [];
+    public async connect() {
+        try {
+            if (!this.client) {
+                const client = await MongoClient.connect(this.connection, { 'useNewUrlParser': true, useUnifiedTopology: true });
+                client.db()
+            }
+        } catch(error) {
+            console.error(error);
         }
     }
+    public db() {
+        if (this.client) {
 
-
-    async objectIdify(DTO:any){
-
+            return this.client.db(this.database);
+        } else {
+            console.error('no db found');
+            return false;
+        }
     }
+}
 
-    async santizeId(res:any){
+const asyncCall = async () => {
+    
+    const mongo = new Mongo();
+    await mongo.connect();
+    const db = mongo.db();
 
-    }
 
 }
 
-/* Making de connection*/
-const driver = new Mongo('mongodb://127.0.0.1:27017');
+asyncCall();
 
 /*Before CRUD actions we have to set the model and the data*/
 const TAskModel = new TestModel({id: "1", name:"algo", secret:"sdfsfsfs", modified:1, toDTO:() => {return { this:"algo" }}, toJSON:() => {return { this:"algo" }}, created:1});
