@@ -1,20 +1,14 @@
 {
-  "name": "JS_Stuff",
+  "name": "@paxico/typescript-sandbox",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "yarn tsc",
-    "postinstall": "yarn tsc",
-    "clean": "rm ./build/*.*"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "private": true,
+  "workspaces": ["packages/*"],
   "keywords": [],
   "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "@types/node": "^13.1.6",
-    "mongodb": "^3.5.0",
-    "typescript": "^3.7.4",
-    "@types/mongodb": "^3.3.14"
-  }
+  "license": "ISC"
 }

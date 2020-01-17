@@ -1,9 +1,5 @@
 # Typescript-Sandbox
 
-```$ yarn add typescript -g```
+```$ docker run -d -p 27017:27017 mongo ```
 
 ```$ yarn```
-
-```$ yarn build```
-
-```$ node build/{script}```
