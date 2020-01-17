@@ -6,7 +6,7 @@
   "scripts": {
     "build": "yarn tsc",
     "postinstall": "yarn tsc",
-    "clean": "rm ./build/*.*",
+    "clean": "rm ./build/*.*"
   },
   "keywords": [],
   "author": "",
