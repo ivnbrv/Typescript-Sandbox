@@ -1,5 +1,5 @@
-import Model from '../core/src/Model';
-import IModel from '../core/src/IModel';
+import Model from '@paxico/core/build/Model';
+import IModel from '@paxico/core/build/IModel';
 
 export interface ITestModel extends IModel {
   name: string;
