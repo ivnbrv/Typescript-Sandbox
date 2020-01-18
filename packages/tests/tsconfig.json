@@ -1,0 +1,16 @@
+{
+    "compilerOptions":{
+
+        "target": "esnext",
+        "module": "CommonJS",
+        "declaration": true, 
+        "sourceMap": true,
+        "outDir": "./build",
+        "strict": true,
+        "moduleResolution": "node",
+        "types": ["node", "jest"], 
+        "esModuleInterop": true,  
+        "forceConsistentCasingInFileNames": true
+    },
+    "include": ["./src"]
+}

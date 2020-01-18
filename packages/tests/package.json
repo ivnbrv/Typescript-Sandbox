@@ -1,0 +1,14 @@
+{
+  "name": "@ivnbrv/tests",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "build": "yarn tsc",
+    "postinstall": "yarn tsc"
+  },
+  "devDependencies": {
+    "@types/jest": "^24.9.0",
+    "jest": "^24.9.0"
+  }
+}
