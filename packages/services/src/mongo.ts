@@ -51,24 +51,28 @@ export default class Mongo implements IQueryableDriver {
         throw new Error("Method not implemented.");
     }
 
+    test() {
+        return true;
+    }
     close() {
         console.log('closed')
     }
 
 }
 
-const driver = new Mongo('mongodb://127.0.0.1:27017', 'testdrive');
 
-if (driver) {
-    driver.insert({ name: "ivan", email: "ivan@paxicotech.com" }, { schema: 'users' }).then((document) => {
+// const driver = new Mongo('mongodb://127.0.0.1:27017', 'testdrive');
 
-        console.log('insert done', document)
+// if (driver) {
+//     driver.insert({ name: "ivan", email: "ivan@paxicotech.com" }, { schema: 'users' }).then((document) => {
+
+//         console.log('insert done', document)
 
         
-    }).catch((e) => {
+//     }).catch((e) => {
 
-        console.log('insert error cached')
+//         console.log('insert error cached')
 
-    })
-}
+//     })
+// }
  
