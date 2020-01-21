@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "try": "yarn tsc && node",
     "build": "yarn tsc",
     "postinstall": "yarn tsc"
   },
