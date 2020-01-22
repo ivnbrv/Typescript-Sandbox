@@ -4,7 +4,7 @@
  */
 import { IQueryableDriver } from '@paxico/core/build/IDrivers';
 import Model from '@paxico/core/build/Model';
-import mongodb, { ObjectId, MongoClient } from 'mongodb';
+import mongodb, { ObjectId, MongoClient, Cursor } from 'mongodb';
 import assert, { throws } from 'assert'
 
 /**
@@ -12,7 +12,7 @@ import assert, { throws } from 'assert'
  * to create instances to diferent mongo 
  * servers using uri as the key for each of them
  */
-export const connectionMap: { [key: string]: Promise<void | mongodb.MongoClient> } = {};
+export const connectionMap: { [key: string]: Promise<void | MongoClient> } = {};
 
 /**
  * Options Interface for the mongo connection
@@ -41,15 +41,14 @@ export default class Mongo implements IQueryableDriver {
         const database = options.database || 'test'
         this.options = { ...options, database, uri }
         this.status = { database, uri };
-        
+
         // Must have a valid mongo url
         if (!uri) {
-            this.setDriverStatus('URI_NOT_FOUND')
+            this.driverStatus = { ...this.status, code: 'URI_NOT_FOUND' };
             return;
         }
 
         // this.connection = this.setMapConnections(uri);
-
         if (!(uri in connectionMap)) {
             connectionMap[uri] = mongodb.MongoClient
                 .connect(uri, {
@@ -58,47 +57,40 @@ export default class Mongo implements IQueryableDriver {
                     useNewUrlParser: true,
                 })
                 .catch((e) => {
-                    this.setDriverStatus('CONNECTION_ERROR')
+                    console.log('not connected')
+                    this.driverStatus = { ...this.status, code: 'CONNECTION_ERROR' };
                     return;
                 });
         }
-        
+
         this.connection = connectionMap[uri];
-        
+
         if (!this.connection) {
-            this.setDriverStatus('NOT_CONNECTED')
+            this.driverStatus = { ...this.status, code: 'CONNECTION_ERROR' };
             process.exit(1);
             return;
-        } else {
-            this.setDriverStatus('CONNECTED')
         }
-        
-       
+
     }
 
     /**
-     * setDriverStatus
+     * get/set DriverStatus
      * @param code 
      */
-    async setDriverStatus(code: string) {
-        
-        this.status = {
-            code,
-            'uri': this.options.uri!,
-            'database': this.options.database!
-        }
+    set driverStatus(status: IMongoStatus) {
+        this.status = status
     }
-    getDriverStatus() {
-        return this.status;
+    get driverStatus(): IMongoStatus {
+        return this.status!;
     }
+
     /**
      * mapConnections
      * @param uri 
      */
-    setMapConnections(uri:string) {
+    setMapConnections(uri: string) {
 
         if (!(uri in connectionMap)) {
-
             connectionMap[uri] = mongodb.MongoClient.connect(uri, {
                 poolSize: 10,
                 socketTimeoutMS: 90000,
@@ -109,48 +101,109 @@ export default class Mongo implements IQueryableDriver {
             }).catch((e) => {
                 process.exit(1);
                 return;
-            })   
+            })
         }
         return connectionMap[uri];
     }
     getMappedConnection(uri: string) {
         return connectionMap[uri];
     }
-
+    /**
+     * Insert into mongodb
+     * @param obj 
+     */
     async insert(obj: any): Promise<any> {
         const connection = await this.connection;
         const collectionName = 'test';
-    ​
+
         if (connection) {
-          const db = connection.db(this.options.database);
-          const collection = db.collection(collectionName);
-          const results = await collection.insertOne(obj);
-          return results.ops.shift();
+            const db = connection.db(this.options.database);
+            const collection = db.collection(collectionName);
+            const results = await collection.insertOne(obj);
+            return results.ops.shift();
         }
-    ​
-        throw new Error('unable to connect to mongo, "connection" is falsey');
+
+        throw new Error('Connection Error');
+    }
+    /**
+    * Update or insert record
+    * @param obj 
+    */
+    async upsert(query: any, obj: any): Promise<any> {
+        const connection = await this.connection;
+        const collectionName = 'test';
+
+        if (connection) {
+            const db = connection.db(this.options.database);
+            const collection = db.collection(collectionName);
+            const results = await collection.updateOne(query, { $set: obj }, { upsert: true });
+            return obj;
+        }
+
+        throw new Error('Connection Error');
     }
 
-    async upsert(query: any, options: any): Promise<any> {
-        
-        throw new Error('unable to connect to mongo, "connection" is falsey');  
+
+    async delete(obj: any): Promise<any> {
+        const connection = await this.connection;
+        const collectionName = 'test';
+
+        if (connection) {
+            const db = connection.db(this.options.database);
+            const collection = db.collection(collectionName);
+            const results = await collection.deleteOne(obj);
+            return results;
+        }
+
+        throw new Error('Connection Error');
     }
 
-    async delete(query: any, options: any): Promise<any> {
-        throw new Error("Method not implemented.");
+    async find(query: any): Promise<any> {
+        const connection = await this.connection;
+        const collectionName = 'test';
+
+        if (connection) {
+            const db = connection.db(this.options.database);
+            const collection = db.collection(collectionName);
+            const results = await collection.find(query);
+            return results;
+        }
+
+        throw new Error('Connection Error');
     }
 
-    async find(query: any, options: any): Promise<any[]> {
-        throw new Error("Method not implemented.");
+    arrayFromCursor(cursor: Cursor<any>): Promise<any[]> {
+        return new Promise((resolve, reject) => {
+            const results: any[] = [];
+            const stream = cursor.stream();
+            stream.on('data', (chunk) => {
+                results.push(chunk);
+            });
+
+            stream.on('error', (err) => {
+                reject(err);
+            });
+
+            stream.on('end', () => {
+                resolve(results);
+            });
+        });
     }
+
 
     test() {
         return true;
     }
 
     /**
-     * Close connections
+     * Open / Close Connections
      */
+    async open() {
+        const connection = await this.connection;
+        if (connection) {
+            this.driverStatus = { ...this.status, code: 'CONNECTED' };
+        }
+    }
     async close() {
         return await this.connection.close();
     }

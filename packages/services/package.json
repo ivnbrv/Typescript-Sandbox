@@ -15,9 +15,11 @@
     "@paxico/core": "1.0.0",
     "@types/mongodb": "^3.3.14",
     "@types/node": "^13.1.6",
+    "@types/redis": "^2.8.14",
     "jest": "^24.9.0",
     "mongodb": "^3.4.1",
-    "node-graceful": "^3.0.0"
+    "node-graceful": "^3.0.0",
+    "redis": "^2.8.0"
   },
   "devDependencies": {
     "typescript": "^3.7.4"
