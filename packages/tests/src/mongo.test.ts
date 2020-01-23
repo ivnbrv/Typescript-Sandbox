@@ -60,12 +60,12 @@ describe('Mongo', () => {
 
 
     let data = mongo.arrayFromCursor(result);
-    
+
     data.then((result) => {
       expect(result).toBeTruthy();
       done();
     })
-    
+
 
   });
 });
