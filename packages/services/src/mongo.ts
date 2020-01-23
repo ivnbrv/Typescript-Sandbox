@@ -117,7 +117,7 @@ export default class Mongo implements IQueryableDriver {
         return connectionMap[uri];
     }
 
-    async insert(obj: any): Promise<any> {
+    async insert(obj: Model): Promise<any> {
         const connection = await this.connection;
         const collectionName = 'test';
     ​

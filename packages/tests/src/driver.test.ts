@@ -27,15 +27,16 @@ describe('Mongo', () => {
   //   done();
   // });
 
-  // it('can insert data?', async (done) => {
+  it('can insert data?', async (done) => {
 
-  //   const model = { "_id": "004", "name": "ivan" };
-  //   const insert = await mongo.insert(model);
 
-  //   expect(insert).toEqual(model);
-  //   done();
+    // const model = { "_id": "004", "name": "ivan" };
+    const insert = await mongo.insert(model);
+
+    expect(insert).toEqual(model);
+    done();
   
-  // });
+  });
 
 
 });
