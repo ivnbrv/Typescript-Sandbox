@@ -1,23 +1,24 @@
 {
-    "name": "@paxico/examples",
-    "version": "1.0.0",
-    "description": "",
-    "main": "index.js",
-    "scripts": {
-      "build": "yarn tsc",
-      "postinstall": "yarn tsc"
-    },
-    "keywords": [],
-    "author": "",
-    "license": "ISC",
-    "dependencies": {
-        "@paxico/core": "1.0.0",
-        "@types/mongodb": "^3.3.14",
-        "@types/node": "^13.1.6",
-        "mongodb": "^3.4.1"
-      },
-      "devDependencies": {
-        "typescript": "^3.7.4"
-      }
+  "name": "@paxico/examples",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "yarn tsc",
+    "postinstall": "yarn tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@paxico/core": "1.0.0",
+    "@types/mongodb": "^3.3.14",
+    "@types/node": "^13.1.6",
+    "inversify": "^5.0.1",
+    "mongodb": "^3.4.1"
+  },
+  "devDependencies": {
+    "reflect-metadata": "^0.1.13",
+    "typescript": "^3.7.4"
   }
-  
+}
